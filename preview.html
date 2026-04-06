@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pendataan Data Siswa Persiapan Ujian Sekolah</title>
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #abc1cd, #ffffff);
+        margin: 0;
+        padding: 15px;
+    }
+
+    .container {
+        max-width: 500px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #4facfe;
+        color: white;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #ff4d00;
+    }
+
+    form {
+        display: none;
+        margin-top: 15px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    th {
+        background: #4facfe;
+        color: white;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .hapus-btn {
+        background: #ff4d4d;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+    }
+
+    .hapus-btn:hover {
+        background: #cc0000;
+    }
+
+    @media (max-width: 480px) {
+        h1 {
+            font-size: 18px;
+        }
+
+        table {
+            font-size: 12px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Mohon Untuk Mengisi Data Sesuai Dengan Kartu Keluarga Anda</h1>
+
+    <!-- Tombol tampilkan form -->
+    <button onclick="tampilkanForm()">Klik Untuk Isi Data</button>
+
+    <!-- Form -->
+    <form id="formData" onsubmit="simpanData(event)">
+        <input type="text" id="nama" placeholder="Nama Lengkap" required>
+        <input type="text" id="tempat" placeholder="Tempat Lahir" required>
+        <input type="date" id="tanggal" required>
+        <input type="text" id="ibu" placeholder="Nama Ibu Kandung" required>
+
+        <button type="submit">Simpan Data</button>
+    </form>
+
+    <!-- Tabel -->
+    <table id="tabelData" style="display:none;">
+        <thead>
+            <tr>
+                <th>Nama</th>
+                <th>TTL</th>
+                <th>Ibu</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="dataBody"></tbody>
+    </table>
+</div>
+
+<script>
+function tampilkanForm() {
+    document.getElementById("formData").style.display = "block";
+}
+
+function simpanData(event) {
+    event.preventDefault();
+
+    let nama = document.getElementById("nama").value;
+    let tempat = document.getElementById("tempat").value;
+    let tanggal = document.getElementById("tanggal").value;
+    let ibu = document.getElementById("ibu").value;
+
+    let ttl = tempat + ", " + tanggal;
+
+    document.getElementById("tabelData").style.display = "table";
+
+    let table = document.getElementById("dataBody");
+    let row = table.insertRow();
+
+    row.insertCell(0).innerText = nama;
+    row.insertCell(1).innerText = ttl;
+    row.insertCell(2).innerText = ibu;
+
+    // Tombol hapus
+    let aksiCell = row.insertCell(3);
+    let hapusBtn = document.createElement("button");
+    hapusBtn.innerText = "Hapus";
+    hapusBtn.className = "hapus-btn";
+
+    hapusBtn.onclick = function() {
+        table.deleteRow(row.rowIndex - 1);
+    };
+
+    aksiCell.appendChild(hapusBtn);
+
+    // ALERT KONFIRMASI
+    alert("Data berhasil disimpan.\nCek kembali apakah data yang anda isi sudah benar.");
+
+    document.getElementById("formData").reset();
+}
+</script>
+
+</body>
+</html>
