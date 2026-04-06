@@ -132,7 +132,21 @@
 
 <script>
 function tampilkanForm() {
-    document.getElementById("formData").style.display = "block";
+    let form = document.getElementById("formData");
+
+    if (form.style.display === "block") {
+        form.style.display = "none";
+    } else {
+        form.style.display = "block";
+    }
+}
+
+function formatTanggal(tanggal) {
+    let tgl = new Date(tanggal);
+    let hari = String(tgl.getDate()).padStart(2, '0');
+    let bulan = String(tgl.getMonth() + 1).padStart(2, '0');
+    let tahun = tgl.getFullYear();
+    return `${hari}-${bulan}-${tahun}`;
 }
 
 function simpanData(event) {
@@ -140,38 +154,60 @@ function simpanData(event) {
 
     let nama = document.getElementById("nama").value;
     let tempat = document.getElementById("tempat").value;
-    let tanggal = document.getElementById("tanggal").value;
+    let tanggal = formatTanggal(document.getElementById("tanggal").value);
     let ibu = document.getElementById("ibu").value;
 
     let ttl = tempat + ", " + tanggal;
 
     document.getElementById("tabelData").style.display = "table";
 
-    let table = document.getElementById("dataBody");
-    let row = table.insertRow();
+    let data = JSON.parse(localStorage.getItem("dataSiswa")) || [];
+    data.push({ nama, ttl, ibu });
+    localStorage.setItem("dataSiswa", JSON.stringify(data));
 
-    row.insertCell(0).innerText = nama;
-    row.insertCell(1).innerText = ttl;
-    row.insertCell(2).innerText = ibu;
+    tampilkanData();
 
-    // Tombol hapus
-    let aksiCell = row.insertCell(3);
-    let hapusBtn = document.createElement("button");
-    hapusBtn.innerText = "Hapus";
-    hapusBtn.className = "hapus-btn";
-
-    hapusBtn.onclick = function() {
-        table.deleteRow(row.rowIndex - 1);
-    };
-
-    aksiCell.appendChild(hapusBtn);
-
-    // ALERT KONFIRMASI
     alert("Data berhasil disimpan.\nCek kembali apakah data yang anda isi sudah benar.");
 
     document.getElementById("formData").reset();
 }
-</script>
 
+function tampilkanData() {
+    let table = document.getElementById("dataBody");
+    table.innerHTML = "";
+
+    let data = JSON.parse(localStorage.getItem("dataSiswa")) || [];
+
+    if (data.length > 0) {
+        document.getElementById("tabelData").style.display = "table";
+    }
+
+    data.forEach((item, index) => {
+        let row = table.insertRow();
+
+        row.insertCell(0).innerText = item.nama;
+        row.insertCell(1).innerText = item.ttl;
+        row.insertCell(2).innerText = item.ibu;
+
+        let aksiCell = row.insertCell(3);
+        let hapusBtn = document.createElement("button");
+        hapusBtn.innerText = "Hapus";
+        hapusBtn.className = "hapus-btn";
+
+        hapusBtn.onclick = function() {
+            if (confirm("Yakin ingin menghapus data ini?")) {
+                data.splice(index, 1);
+                localStorage.setItem("dataSiswa", JSON.stringify(data));
+                tampilkanData();
+            }
+        };
+
+        aksiCell.appendChild(hapusBtn);
+    });
+}
+
+// Load data saat halaman dibuka
+window.onload = tampilkanData;
+</script>
 </body>
 </html>
